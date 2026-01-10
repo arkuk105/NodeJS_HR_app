@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../lib/api';
+import { DocumentUploadForm } from '../components/DocumentUploadForm';
 import {
   FileText,
   Download,
@@ -28,6 +29,7 @@ export const Documents = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<string>('all');
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const isAdmin = user?.role === 'hr_admin' || user?.role === 'manager';
 
   useEffect(() => {
@@ -96,7 +98,10 @@ export const Documents = () => {
           <p className="text-slate-600 mt-2">Manage employee documents and files</p>
         </div>
         {isAdmin && (
-          <button className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <button
+            onClick={() => setShowUploadModal(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
             <Upload size={20} />
             Upload Document
           </button>
@@ -229,6 +234,13 @@ export const Documents = () => {
           </div>
         )}
       </div>
+
+      {showUploadModal && (
+        <DocumentUploadForm
+          onClose={() => setShowUploadModal(false)}
+          onSuccess={fetchDocuments}
+        />
+      )}
     </div>
   );
 };

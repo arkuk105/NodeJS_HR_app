@@ -8,6 +8,7 @@ import {
   Calendar,
   FileText,
   Download,
+  Filter,
 } from 'lucide-react';
 
 interface ReportSummary {
@@ -22,6 +23,13 @@ interface ReportSummary {
 export const Reports = () => {
   const [summary, setSummary] = useState<ReportSummary | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    dateFrom: '',
+    dateTo: '',
+    department: 'all',
+    reportFormat: 'pdf',
+  });
 
   useEffect(() => {
     fetchReportSummary();
@@ -87,10 +95,80 @@ export const Reports = () => {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800">Reports & Analytics</h1>
-        <p className="text-slate-600 mt-2">Generate and download comprehensive reports</p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800">Reports & Analytics</h1>
+          <p className="text-slate-600 mt-2">Generate and download comprehensive reports</p>
+        </div>
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+        >
+          <Filter size={20} />
+          {showFilters ? 'Hide Filters' : 'Show Filters'}
+        </button>
       </div>
+
+      {showFilters && (
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4">Report Filters</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Date From
+              </label>
+              <input
+                type="date"
+                value={filters.dateFrom}
+                onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Date To
+              </label>
+              <input
+                type="date"
+                value={filters.dateTo}
+                onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Department
+              </label>
+              <select
+                value={filters.department}
+                onChange={(e) => setFilters({ ...filters, department: e.target.value })}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All Departments</option>
+                <option value="engineering">Engineering</option>
+                <option value="hr">HR</option>
+                <option value="sales">Sales</option>
+                <option value="marketing">Marketing</option>
+                <option value="finance">Finance</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Format
+              </label>
+              <select
+                value={filters.reportFormat}
+                onChange={(e) => setFilters({ ...filters, reportFormat: e.target.value })}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="pdf">PDF</option>
+                <option value="excel">Excel</option>
+                <option value="csv">CSV</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
 
       {summary && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -138,9 +216,14 @@ export const Reports = () => {
               </div>
               <h3 className="text-lg font-semibold text-slate-800 mb-2">{report.title}</h3>
               <p className="text-sm text-slate-600 mb-4">{report.description}</p>
-              <button className="flex items-center gap-2 w-full px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors">
+              <button
+                onClick={() => {
+                  console.log('Generating report:', report.title, 'with filters:', filters);
+                }}
+                className="flex items-center gap-2 w-full px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+              >
                 <Download size={18} />
-                Generate Report
+                Generate {filters.reportFormat.toUpperCase()}
               </button>
             </div>
           );

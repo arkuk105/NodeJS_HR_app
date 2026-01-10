@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../lib/api';
+import { PerformanceReviewForm } from '../components/PerformanceReviewForm';
 import {
   Star,
   TrendingUp,
@@ -409,6 +410,13 @@ export const Performance = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {showCreateModal && (
+        <PerformanceReviewForm
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={fetchReviews}
+        />
       )}
     </div>
   );

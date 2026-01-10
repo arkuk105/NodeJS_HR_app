@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { Employees } from './pages/Employees';
+import { EmployeeDetail } from './pages/EmployeeDetail';
 import { Attendance } from './pages/Attendance';
 import { Leave } from './pages/Leave';
 import { Payroll } from './pages/Payroll';
@@ -33,6 +34,11 @@ function App() {
             <Route path="employees" element={
               <ProtectedRoute roles={['hr_admin', 'manager']}>
                 <Employees />
+              </ProtectedRoute>
+            } />
+            <Route path="employees/:id" element={
+              <ProtectedRoute roles={['hr_admin', 'manager']}>
+                <EmployeeDetail />
               </ProtectedRoute>
             } />
             <Route path="attendance" element={<Attendance />} />
